@@ -244,6 +244,7 @@ def imprimir():
         print("|{:<10}|{:<10}|{:<50}|".format(i.fila,i.columna,i.lexema))
     print('-'*33)
     print("\n ERRORES")
+    print(len(errores))
     if len(errores)==0:
         print("No hay errores")
     else:

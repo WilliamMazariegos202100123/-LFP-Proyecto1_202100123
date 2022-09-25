@@ -17,6 +17,8 @@ letras=re.compile(r'[a-z]')
 numeros=re.compile(r'[0-9]')
 contenidoruta=""
 archivoextension=""
+pressanalizar=False
+conterrores=0
 def backpdf():
     win_manualtecnico.destroy()
     window_main.deiconify()
@@ -63,7 +65,7 @@ def manualtecnico():
 
 def abrirarchivo():
     window_main.withdraw() 
-    global abrir_win
+    global abrir_win,tokens_lista,errores
     abrir_win=Toplevel(window_main) 
     abrir_win.iconbitmap("icono.ico") 
     abrir_win.resizable(width=False, height=False)
@@ -82,6 +84,8 @@ def abrirarchivo():
         extension=pathlib.Path(archivo)
         archivoextension=extension.name
         if str(extension.suffix)==".txt":
+            tokens_lista.clear()
+            errores.clear()
             text_area.delete("0.0",END)
             labelruta.config(text=archivo)
             f = open (archivo,'r')
@@ -123,6 +127,8 @@ def abrirarchivo():
             lbarchivocargado.place(x=840,y=300,width=150,height=30)
             lbarchivocargado2.place(x=840,y=330,width=150,height=30)
             messagebox.showinfo("","Archivo Guardado")
+            tokens_lista.clear()
+            errores.clear()
         else:
             messagebox.showerror("","No selecciono ninguna ruta de almecenamiento")
 
@@ -159,6 +165,8 @@ def abrirarchivo():
     abrir_win.mainloop()
 
 def analizar():
+    global tokens_lista,errores,pressanalizar
+    pressanalizar=True
     if len(contenidoruta)==0:
         messagebox.showerror("","No hay archivo cargado en el sistema")
     else:
@@ -191,11 +199,12 @@ def analizar():
         tabla.heading("c2",text="Lexemna")
         
         global letras,numeros,row,col
+        row=0
+        col=0
         estado=0
         estadoanterior=0
         f = open (contenidoruta,'r')
         mensaje = f.read()
-        print(mensaje) #Texto original
         f.close()
         auxtoken=""
         auxtokenum=""
@@ -394,10 +403,8 @@ def analizar():
                     estadoanterior=8
                     col+=1
                 elif char=='/':
-                    print(auxtokenum)
                     guardar_token(row,col,auxtokenum)
                     col+=1
-                    print(char)
                     guardar_token(row,col,char)
                     auxtokenum=""
                     estado=1
@@ -408,13 +415,15 @@ def analizar():
                     guardarerror(row,col,char)
                     continue
 
-
-        
+        conttokens=0
         for i in tokens_lista:
             tabla.insert("",END,text=i.fila,values=(i.columna,i.lexema))
+            conttokens+=1
         tabla.place(x=20,y=60,height=500,width=700)
 
-
+        def generarhtmlerror():
+            htmlerror=""
+        
 
         img_generar= PhotoImage(file="generar.png")
         bt_generar=Button(analizar_win) # Boton generar archivo html
@@ -428,47 +437,68 @@ def guardar_token(fila,columna,lexema):
     tokens_lista.append(nuevotoken)
 
 def guardarerror(fila,columna,lexema):
-    nuevotoken=Error(fila,columna,lexema)
+    global conterrores
+    conterrores+=1
+    print(conterrores)
+    nuevotoken=Error(conterrores,lexema,"Error",columna,fila)
     errores.append(nuevotoken)
 
+
+
 def abrirerrores():
-    window_main.withdraw() 
-    global error_win
-    error_win=Toplevel(window_main)  
-    error_win.iconbitmap("icono.ico")
-    error_win.resizable(width=False, height=False)
-    error_win.title("Errores")
-    ancho=1000
-    alto=700
-    sw=error_win.winfo_screenwidth()
-    sh=error_win.winfo_screenheight()
-    x=sw/2-ancho/2
-    y=sh/2-alto/2-20
-    error_win.geometry("%dx%d+%d+%d"%(ancho,alto,x,y))
-    fondo=PhotoImage(file="fondoerror.png")
-    lbfondo=Label(error_win,image=fondo).place(x=-2,y=0)  #Fondo
-    img_back= PhotoImage(file="regresar.png")
-    bt_regresar=Button(error_win,command=back5) #Boton regresar
-    bt_regresar.config(image=img_back)
-    bt_regresar.place(x=0,y=0)
-    img_generar= PhotoImage(file="generar.png")
-    bt_generar=Button(error_win) # Boton generar archivo html
-    bt_generar.config(image=img_generar)
-    bt_generar.place(x=400,y=600)
-    #Tabla de errores
-    tabla=Treeview(error_win,columns=("c1","c2","c3","c4"))
-    tabla.column("#0",width=60, anchor=CENTER)
-    tabla.column("c1",width=100, anchor=CENTER)
-    tabla.column("c2",width=100, anchor=CENTER)
-    tabla.column("c3",width=100, anchor=CENTER)
-    tabla.column("c4",width=100, anchor=CENTER)
-    tabla.heading("#0",text="No.")
-    tabla.heading("c1",text="Lexema")
-    tabla.heading("c2",text="Tipo")
-    tabla.heading("c3",text="Columna")
-    tabla.heading("c4",text="Fila")
-    tabla.place(x=20,y=60,height=500,width=700)
-    error_win.mainloop()
+    global errores,tokens_lista,pressanalizar
+    if len(contenidoruta)==0:
+        messagebox.showerror("No hay archivo","No hay archivo de lectura cargado en el sistema.")
+        pressanalizar=False
+    elif len(errores)==0 and pressanalizar==False:
+        messagebox.showerror("Error!","Necesita analizar el archivo primero.")
+        pressanalizar=False
+    elif len(errores)==0 and pressanalizar==True:
+        messagebox.showinfo("No hay errores","En hora buena, el archivo no contiene errores lexicos")
+        pressanalizar=False  
+    else:
+        pressanalizar=False
+        window_main.withdraw() 
+        global error_win
+        error_win=Toplevel(window_main)  
+        error_win.iconbitmap("icono.ico")
+        error_win.resizable(width=False, height=False)
+        error_win.title("Errores")
+        ancho=1000
+        alto=700
+        sw=error_win.winfo_screenwidth()
+        sh=error_win.winfo_screenheight()
+        x=sw/2-ancho/2
+        y=sh/2-alto/2-20
+        error_win.geometry("%dx%d+%d+%d"%(ancho,alto,x,y))
+        fondo=PhotoImage(file="fondoerror.png")
+        lbfondo=Label(error_win,image=fondo).place(x=-2,y=0)  #Fondo
+        img_back= PhotoImage(file="regresar.png")
+        bt_regresar=Button(error_win,command=back5) #Boton regresar
+        bt_regresar.config(image=img_back)
+        bt_regresar.place(x=0,y=0)
+        img_generar= PhotoImage(file="generar.png")
+        bt_generar=Button(error_win) # Boton generar archivo html
+        bt_generar.config(image=img_generar)
+        bt_generar.place(x=400,y=600)
+        #Tabla de errores
+        tabla=Treeview(error_win,columns=("c1","c2","c3","c4"))
+        tabla.column("#0",width=60, anchor=CENTER)
+        tabla.column("c1",width=100, anchor=CENTER)
+        tabla.column("c2",width=100, anchor=CENTER)
+        tabla.column("c3",width=100, anchor=CENTER)
+        tabla.column("c4",width=100, anchor=CENTER)
+        tabla.heading("#0",text="No.")
+        tabla.heading("c1",text="Lexema")
+        tabla.heading("c2",text="Tipo")
+        tabla.heading("c3",text="Columna")
+        tabla.heading("c4",text="Fila")
+
+        for i in errores:
+            tabla.insert("",END,text=i.No,values=(i.lexema,i.tipo,i.columna,i.fila))
+        tabla.place(x=20,y=60,height=500,width=700)
+        
+        error_win.mainloop()
 
 def ayuda():
     window_main.withdraw()  
