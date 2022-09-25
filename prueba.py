@@ -1,8 +1,7 @@
 from tkinter import *
 from tkinter import Button
 from tkinter import scrolledtext
-import re
-
+import webbrowser
 root = Tk()
 root.geometry("600x600")
 root.title("ScrolledText Widget Example")
@@ -16,10 +15,12 @@ trans=str.maketrans(a,b)
 print(cadena,len(cadena))
 c=cadena.translate(trans)
 print(c,len(c))
+def abrir():
+    webbrowser.open_new_tab('holamundo.html') 
 
 
 
 
-boton3=Button(root,text="analizar")
+boton3=Button(root,text="abrir html",command=abrir)
 boton3.pack()   
 root.mainloop()
