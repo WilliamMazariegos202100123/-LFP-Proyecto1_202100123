@@ -75,14 +75,15 @@ def manualtecnico():
     v1 = pdf.ShowPdf()
     v1.img_object_li.clear()
     v2 = v1.pdf_view(win_manualtecnico,
-                     pdf_location="proyecto.pdf", width=80, height=45)
+                     pdf_location="manualtecnico.pdf", width=80, height=45)
     v2.place(x=40, y=0)
     win_manualtecnico.mainloop()
 
 
 def abrirarchivo():
     window_main.withdraw()
-    global abrir_win, tokens_lista, errores
+    global abrir_win, tokens_lista, errores,pressanalizar
+    pressanalizar=False
     tokens_lista.clear()
     errores.clear()
     abrir_win = Toplevel(window_main)
@@ -114,8 +115,7 @@ def abrirarchivo():
             f.close()
             text_area.insert(END, contenido)
             contenidoruta = labelruta.cget("text")
-            lbarchivocargado.config(background="white", text=str(
-                extension.name), font=("Arial Black", 12))
+            lbarchivocargado.config(background="white", text=str(extension.name), font=("Arial Black", 12))
 
         elif str(extension.suffix) != ".txt" and len(archivo) != 0:
             messagebox.showerror("", str(extension.name) +
@@ -192,7 +192,10 @@ def abrirarchivo():
 
 
 def analizar():
-    global tokens_lista, errores, pressanalizar
+    global tokens_lista, errores, pressanalizar,conterrores
+    conterrores=0
+    tokens_lista.clear()
+    errores.clear()
     pressanalizar = True
     if len(contenidoruta) == 0:
         messagebox.showerror("", "No hay archivo cargado en el sistema")
@@ -458,7 +461,6 @@ def analizar():
 
 
 def operaciones():
-    print("lista errores: ",len(errores))
     if len(errores)>0:
         messagebox.showerror("Html Failed","No se puede generar un html porque el archivo presenta errores, verifique su archivo de entrada.")
     else:
@@ -811,7 +813,8 @@ def guardarerror(fila, columna, lexema):
 
 
 def abrirerrores():
-    global errores, tokens_lista, pressanalizar
+    global errores, tokens_lista, pressanalizar,conterrores
+    conterrores=0
     if len(contenidoruta) == 0:
         messagebox.showerror(
             "No hay archivo", "No hay archivo de lectura cargado en el sistema.")
@@ -849,7 +852,7 @@ def abrirerrores():
             htmlerror = ""
             htmlerror+="""<html>
             <head>
-                <title>Errores Lexicos</title>
+                <title>ERRORES_202100123</title>
             </head>
             <style>
                 body {
@@ -1038,7 +1041,7 @@ def manualusuario():
     usuario = pdf.ShowPdf()
     usuario.img_object_li.clear()
     usuario2 = usuario.pdf_view(
-        win_manualusuario, pdf_location="TEXTO.pdf", width=80, height=45)
+        win_manualusuario, pdf_location="manualusuario.pdf", width=80, height=45)
     usuario2.place(x=40, y=0)
     win_manualusuario.mainloop()
 

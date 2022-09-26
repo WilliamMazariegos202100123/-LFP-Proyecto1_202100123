@@ -1,0 +1,60 @@
+<Tipo>
+<Operacion=SUMA>
+	<Numero> 4.5</Numero>
+	<Numero> 5.32 </Numero>
+</Operacion>
+<Operacion=POTENCIA>
+	<Numero> 2</Numero>
+	<Numero> 2</Numero>
+</Operacion>
+<Operacion=RESTA>
+	<Numero>5</Numero>
+	<Numero>4</Numero>
+</Operacion>
+<Operacion=MULTIPLICACION>
+	<Numero>1</Numero>
+	<Numero>2</Numero>
+	<Numero>3</Numero>
+	<Numero>4</Numero>
+</Operacion>
+<Operacion=DIVISIÓN>
+	<Numero>10</Numero>
+	<Numero>2</Numero>
+</Operacion>
+<Operacion=RAIZ>
+	<Numero>16</Numero>
+	<Numero>2</Numero>
+</Operacion>
+<Operacion=COSENO>
+	<Numero>3.14</Numero>
+</Operacion>
+<Operacion=SENO>
+	<Numero>3.14</Numero>
+</Operacion>
+<Operacion=TANGENTE>
+	<Numero>3.14</Numero>
+</Operacion>
+<Operacion=MOD>
+	<Numero>6</Numero>
+	<Numero>3</Numero>
+	<Numero>2</Numero>
+	<Numero>5</Numero>
+</Operacion>
+<Operacion=INVERSO>
+	<Numero>10</Numero>
+	<Numero>20</Numero>
+</Operacion>
+</Tipo>
+<Texto>
+Realizar las operaciones básicas de suma, resta, multiplicación y división, así como operaciones complejas.
+</Texto>
+<Funcion = ESCRIBIR> 
+	<Titulo> Operaciones </Titulo> 
+	<Descripcion> [TEXTO] </Descripcion> 
+	<Contenido> [TIPO] </Contenido> 
+</Funcion>
+<Estilo> 
+	<Titulo Color=AZUL Tamanio=16/> 
+	<Descripcion Color=VERDE Tamanio=13/> 
+	<Contenido Color=GRIS Tamanio=12/> 
+</Estilo>
